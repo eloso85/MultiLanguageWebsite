@@ -1,11 +1,33 @@
 import React from 'react'
+import Page from '../components/Page'
 import Layout from '../components/layout'
+import StoryblokService from '../utils/storyblok-service'
 
 export default class extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      pageContent: props.page.data.story.content,
+    }
+  }
+
+  static async getInitialProps({ query }) {
+    StoryblokService.setQuery(query)
+
+    return {
+      page: await StoryblokService.get('cdn/stories/home')
+    }
+  }
+
+  componentDidMount() {
+    StoryblokService.initEditor(this)
+  }
+
   render() {
     return (
-      <Layout>
-        <h1>Welcome to Next-Storyblok World!</h1>
+      <Layout settings={""}>
+        {/* We will define these settings later on */}
+        <Page body={this.state.pageContent.body} />
       </Layout>
     )
   }
